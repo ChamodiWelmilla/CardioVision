@@ -1,0 +1,9 @@
+@echo off
+echo Installing required packages...
+py -m pip install flask scikit-learn pandas joblib
+echo.
+echo Training model and saving artifacts...
+py train_model.py
+echo.
+echo Starting Flask web server...
+py app.py

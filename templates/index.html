@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CardioVision - AI powered cardiovascular risk analysis">
+    <title>CardioVision | AI Heart Health Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-panel {
+            background: var(--surface-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: var(--text-main);
+        }
+
+        input, select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--surface-border);
+            color: var(--text-main);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        select option {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        button {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -10px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -10px var(--primary-glow);
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0.5;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            position: relative;
+        }
+
+        .result-panel.active {
+            opacity: 1;
+        }
+
+        .result-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .result-message {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 1.125rem;
+        }
+
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .btn-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .loading .btn-text {
+            opacity: 0;
+        }
+
+        .loading .loader {
+            display: block;
+        }
+
+        /* Decorative elements */
+        .blob {
+            position: absolute;
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: #3b82f6;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 350px;
+            height: 350px;
+            background: #8b5cf6;
+            border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.1); }
+        }
+        
+        .pulse {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 var(--pulse-color); }
+            70% { box-shadow: 0 0 0 20px rgba(0,0,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+        <div class="glass-panel">
+            <h1>CardioVision</h1>
+            <p class="subtitle">Enter your vitals for AI-driven cardiovascular profile analysis based on population clustering.</p>
+
+            <form id="predictForm">
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" required min="1" max="120" placeholder="e.g. 45" value="45">
+                </div>
+                
+                <div class="form-group">
+                    <label for="sex">Sex</label>
+                    <select id="sex" required>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bloodPressure">Resting Blood Pressure (mm Hg)</label>
+                    <input type="number" id="bloodPressure" required min="50" max="250" placeholder="e.g. 120" value="120">
+                </div>
+
+                <div class="form-group">
+                    <label for="cholesterol">Cholesterol (mg/dl)</label>
+                    <input type="number" id="cholesterol" required min="100" max="600" placeholder="e.g. 200" value="200">
+                </div>
+
+                <div class="form-group">
+                    <label for="maxHR">Maximum Heart Rate Achieved</label>
+                    <input type="number" id="maxHR" required min="60" max="220" placeholder="e.g. 150" value="150">
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <span class="btn-text">Analyze Profile</span>
+                    <div class="loader"></div>
+                </button>
+            </form>
+        </div>
+
+        <div class="glass-panel result-panel" id="resultPanel">
+            <div class="result-icon" id="resultIcon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+                </svg>
+            </div>
+            <h2 class="result-title" id="resultTitle">Awaiting Data</h2>
+            <p class="result-message" id="resultMessage">Fill out the form and submit to receive your personalized cardiovascular cluster analysis.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const resultPanel = document.getElementById('resultPanel');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+
+            // Set loading state
+            btn.classList.add('loading');
+            btn.disabled = true;
+            resultPanel.classList.remove('active');
+
+            const data = {
+                age: document.getElementById('age').value,
+                sex: document.getElementById('sex').value,
+                bloodPressure: document.getElementById('bloodPressure').value,
+                cholesterol: document.getElementById('cholesterol').value,
+                maxHR: document.getElementById('maxHR').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Add slight delay for smooth animation
+                setTimeout(() => {
+                    if (response.ok) {
+                        resultTitle.textContent = result.title;
+                        resultTitle.style.color = result.color;
+                        resultMessage.textContent = result.message;
+                        
+                        // Update Icon styling based on result
+                        resultIcon.style.color = result.color;
+                        resultIcon.style.background = `${result.color}20`;
+                        resultIcon.style.boxShadow = `0 0 20px ${result.color}40`;
+                        
+                        // Add pulse effect matching the cluster color
+                        resultIcon.style.setProperty('--pulse-color', `${result.color}60`);
+                        resultIcon.classList.add('pulse');
+                    } else {
+                        resultTitle.textContent = "Error";
+                        resultTitle.style.color = "#ef4444";
+                        resultMessage.textContent = result.error || "An unexpected error occurred.";
+                        resultIcon.style.color = "#ef4444";
+                        resultIcon.classList.remove('pulse');
+                    }
+                    
+                    resultPanel.classList.add('active');
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }, 600);
+
+            } catch (error) {
+                setTimeout(() => {
+                    resultTitle.textContent = "Connection Error";
+                    resultTitle.style.color = "#ef4444";
+                    resultMessage.textContent = "Could not connect to the analysis server. Please ensure the backend is running.";
+                    resultPanel.classList.add('active');
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }, 600);
+            }
+        });
+    </script>
+</body>
+</html>
