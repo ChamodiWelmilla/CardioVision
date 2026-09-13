@@ -122,6 +122,17 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
+        /* Hide the up/down arrows from number input fields */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
+        }
+
         select option {
             background-color: var(--bg-color);
             color: var(--text-main);
